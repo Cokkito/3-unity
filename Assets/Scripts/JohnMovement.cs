@@ -8,12 +8,12 @@ public class JohnMovement : MonoBehaviour
     public float JumpForce;
     public GameObject BulletPrefab;
 
-
     private Rigidbody2D Rigidbody2D;
     private Animator Animator;
     private float Horizontal;
     private bool Grounded;
     private float LastShoot;
+    private int Health = 10;
 
 
     // Start is called before the first frame update
@@ -66,5 +66,11 @@ public class JohnMovement : MonoBehaviour
 
         GameObject bullet = Instantiate(BulletPrefab, transform.position + direction * 0.1f, Quaternion.identity);
         bullet.GetComponent<BulletScript>().SetDirection(direction);
+    }
+
+    public void Hit()
+    {
+        Health -= 1;
+        if (Health == 0) Destroy(gameObject);
     }
 }

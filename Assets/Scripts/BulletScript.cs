@@ -5,25 +5,44 @@ using UnityEngine;
 public class BulletScript : MonoBehaviour
 {
     public float Speed;
-    private Vector3 Direction;
+    public AudioClip Sound;
 
+    private Vector3 Direction;
     private Rigidbody2D Rigidbody2D;
-    // Start is called before the first frame update
+    
     void Start()
     {
         Rigidbody2D = GetComponent<Rigidbody2D>();
+        Camera.main.GetComponent<AudioSource>().PlayOneShot(Sound);
     }
-    // Update is called once per frame
+
     void FixedUpdate()
     {
         Rigidbody2D.velocity = Direction * Speed;
     }
+
     public void SetDirection(Vector3 direction)
     {
         Direction = direction;
     }
+
     public void DestroyBullet()
     {
         Destroy(gameObject);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        GruntScript grunt = collision.GetComponent<GruntScript>();
+        JohnMovement john = collision.GetComponent<JohnMovement>();
+        if (john != null)
+        {
+            john.Hit();
+        }
+        if (grunt != null)
+        {
+            grunt.Hit();
+        }
+        DestroyBullet();
     }
 }
