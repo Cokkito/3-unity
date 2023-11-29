@@ -6,11 +6,15 @@ public class JohnMovement : MonoBehaviour
 {
     public float Speed;
     public float JumpForce;
+    public GameObject BulletPrefab;
+
 
     private Rigidbody2D Rigidbody2D;
     private Animator Animator;
     private float Horizontal;
     private bool Grounded;
+    private float LastShoot;
+
 
     // Start is called before the first frame update
     void Start()
@@ -35,6 +39,18 @@ public class JohnMovement : MonoBehaviour
         {
             Jump();
         }
+
+        // Disparar
+        if (Input.GetKey(KeyCode.Space) && Time.time > LastShoot + 0.1f)
+        {
+            Shoot();
+            LastShoot = Time.time;
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        Rigidbody2D.velocity = new Vector2(Horizontal, Rigidbody2D.velocity.y);
     }
 
     private void Jump()
@@ -42,9 +58,13 @@ public class JohnMovement : MonoBehaviour
         Rigidbody2D.AddForce(Vector2.up * JumpForce);
     }
 
-
-    private void FixedUpdate()
+    private void Shoot()
     {
-        Rigidbody2D.velocity = new Vector2(Horizontal, Rigidbody2D.velocity.y);
+        Vector3 direction;
+        if (transform.localScale.x == 1.0f) direction = Vector3.right;
+        else direction = Vector3.left;
+
+        GameObject bullet = Instantiate(BulletPrefab, transform.position + direction * 0.1f, Quaternion.identity);
+        bullet.GetComponent<BulletScript>().SetDirection(direction);
     }
 }
